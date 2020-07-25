@@ -194,9 +194,22 @@
                             {{--<div>کد پستی : {{$order->postal_code}}</div>--}}
                         </td>
 ‍‍‍‍‍
-                        <td>
-                            دانشگاه شهید مدنی آذربایجان
-                        </td>
+                       <td>
+                           <div class="d-flex flex-column">
+                               @foreach($order->content as $content)
+                                   @if($content->book !== null)
+                                       @if($content->book->producer_id == 0)
+                                       <span>دانشگاه شهید مدنی</span>
+                                       @else
+                                           <a href="{{url('/admin/producer-edit', $content->book->producer->id)}}"> {{$content->book->producer->name}} </a>
+                                       @endif
+                                   @else
+                                       <span></span>
+                                   @endif
+                               @endforeach
+                           </div>
+                       </td>
+
                         <td >
                             @if($order->is_in_person != 1)
                                 {{$order->address }}<br>{{'کدپستی : '.$order->postal_code}}
@@ -280,8 +293,8 @@
                     <th scope="col">تعداد</th>
                     <th scope="col">قیمت کل</th>
                     <th scope="col">اطلاعات کاربر</th>
+                    <th scope="col">فروشنده</th>
                     <th scope="col" style="width: 310px" >آدرس</th>
-                    <th scope="col" style="width: 140px">تسویه با فروشنده</th>
                     <th scope="col" style="width: 140px">جزئیات</th>
 
                 </tr>
@@ -320,6 +333,23 @@
                             {{--<div>کد پستی : {{$order->postal_code}}</div>--}}
                         </td>
 
+                        <td>
+                            <div class="d-flex flex-column">
+                                @foreach($order->content as $content)
+                                    @if($content->book !== null)
+                                        @if($content->book->producer_id == 0)
+                                            <span>دانشگاه شهید مدنی</span>
+                                        @else
+                                            <a href="{{url('/admin/producer-edit', $content->book->producer->id)}}"> {{$content->book->producer->name}} </a>
+                                        @endif
+                                    @else
+                                        <span></span>
+                                    @endif
+                                @endforeach
+                            </div>
+                        </td>
+
+
                         <td >
                             @if($order->is_in_person != 1)
                                 {{$order->address }}<br>{{'کدپستی : '.$order->postal_code}}
@@ -328,9 +358,7 @@
                             @endif
                         </td>
 
-                        <td>
-                            <a href="#" class="btn btn-sm btn-warning"> تایید </a>
-                        </td>
+
 
                         <td>
                             <a href="#" class="btn btn-sm btn-success" data-toggle="modal" data-target="#Modal{{$order->id}}"> مشاهده </a>

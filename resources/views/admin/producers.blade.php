@@ -4,14 +4,38 @@
         <div class="row">
             <div class=" col-md-10 m-auto">
                 <h6 class="mb-3">ثبت تامین کننده جدید</h6>
-                <form action="" method="post" enctype="multipart/form-data">
+                <form action="{{url('/admin/producer/add')}}" method="post" enctype="multipart/form-data">
                     @csrf
                     <div class="form-group row">
-                        <label for="postTitle" class="col-sm-2 col-form-label">عنوان</label>
+                        <label for="postTitle" class="col-sm-2 col-form-label">نام*</label>
                         <div class="col-sm-7">
                             <input type="text" class="form-control" id="postTitle"
                                    name="name"
-                                   placeholder="عنوان  تامین کننده را وارد کنید" value="" required>
+                                   placeholder="نام  تامین کننده را وارد کنید" value="" required>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="postTitle" class="col-sm-2 col-form-label">ایمیل*</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control" id="postTitle"
+                                   name="email"
+                                   placeholder="ایمیل  تامین کننده را وارد کنید" value="" required>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="postTitle" class="col-sm-2 col-form-label">شماره تلفن*</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control" id="postTitle"
+                                   name="phone"
+                                   placeholder="شماره تلفن  تامین کننده را وارد کنید" value="" required>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="postTitle" class="col-sm-2 col-form-label">رمز عبور*</label>
+                        <div class="col-sm-7">
+                            <input type="password" class="form-control" id="postTitle"
+                                   name="password"
+                                   placeholder="رمز عبور  تامین کننده را وارد کنید" value="" required>
                         </div>
                     </div>
                     <input type="hidden" name="book_id" value="">
@@ -22,6 +46,7 @@
                         </div>
                     </div>
                 </form>
+                <hr>
 
 
 
@@ -36,27 +61,34 @@
                                 <thead>
                                 <tr>
                                     <th scope="col">ردیف</th>
-                                    <th scope="col">نام تامین کننده</th>
-                                    <th scope="col">ویرایش</th>
+                                    <th scope="col">نام</th>
+                                    <th scope="col">ایمیل</th>
+                                    <th scope="col">شماره تلفن</th>
+                                    <th scope="col">مشاهده</th>
                                     <th scope="col"> حذف</th>
                                 </tr>
                                 </thead>
                                 <tbody>
 
+                                @php($i = 0)
+                                @foreach($producers as $producer)
                                 <tr>
-                                    <td>۱</td>
-                                    <th>دانشگاه شهید مدنی آذربایجان</th>
+                                    <td>{{++$i}}</td>
+                                    <th>{{$producer->name}}</th>
+                                    <th>{{$producer->email}}</th>
+                                    <th>{{$producer->phone}}</th>
 
-                                    <td><a href="{{url('/admin/producer-edit')}}"> <button class="btn btn-warning float-md-right" >ویرایش</button> </a></td>
+                                    <td><a href="{{url('/admin/producer-edit', $producer->id)}}"> <button class="btn btn-warning float-md-right" >مشاهده و ویرایش</button> </a></td>
                                     <td>
-                                        <form class="text-center float-right" action="" method="post" onsubmit="return confirm('آیا از حذف  دسته بندی مطمئن هستید؟')">
-                                            <input type="hidden" name="book_id" value="">
+                                        <form class="text-center float-right" action="{{url('/admin/producer/remove')}}" method="post" onsubmit="return confirm('آیا از حذف  فروشنده مطمئن هستید؟')">
+                                            <input type="hidden" name="id" value="{{$producer->id}}">
                                             <input type="submit" class="btn btn btn-danger" value="حذف ">
                                             @csrf
                                         </form>
 
                                     </td>
                                 </tr>
+                                @endforeach
                                 </tbody>
 
                             </table>

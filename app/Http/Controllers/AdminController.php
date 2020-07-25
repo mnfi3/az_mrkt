@@ -8,6 +8,7 @@ use App\Discount;
 use App\Http\Controllers\Util\Pdate;
 use App\Http\Controllers\Util\Pnum;
 use App\Order;
+use App\OrderContent;
 use App\Slider;
 use App\User;
 use Illuminate\Http\Request;
@@ -103,23 +104,29 @@ class AdminController extends Controller
 
 
   public function books(){
-    $books = Book::orderBy('id', 'desc')->paginate(10);
+    $books = Book::orderBy('id', 'desc')->paginate(20);
     $categories = Category::all();
-    return view('admin.products', compact(['books', 'categories']));
+    $producers = User::where('role', '=', 'producer')->get();
+    return view('admin.products', compact(['books', 'categories', 'producers']));
+  }
+
+  public function bookSearch(Request $request){
+    $search = $request->text;
+    $books =Book::where('name', 'like', '%'.$search.'%')->paginate(20);
+    $categories = Category::all();
+    $producers = User::where('role', '=', 'producer')->get();
+    return view('admin.products', compact(['books', 'categories', 'producers']))->with('search', $search);
   }
 
 
   public function bookInsert(Request $request){
     $this->validate($request, [
+      'producer_id' => 'numeric',
       'category_id' => 'numeric',
       'name' => 'required|min:1|max:200|string',
-      'author' => 'required|min:1|max:200|string',
       'description' => 'required|min:1|max:6000|string',
-      'publisher' => 'required|min:1|max:200|string',
-      'publication_date' => 'required|min:1|max:200|string',
       'price' => 'required|min:0|max:20000000|numeric',
       'discount_percent' => 'required|min:0|max:100|numeric',
-      'page_count' => 'required|min:0|max:200000|numeric',
       'stock' => 'required|min:0|max:200000|numeric',
       'image' => 'required|image',
     ]);
@@ -149,16 +156,12 @@ class AdminController extends Controller
     }
 
     $book = Book::create([
+      'producer_id' => $request->producer_id,
       'category_id' => $request->category_id,
       'name' => $request->name,
-      'author' => $request->author,
-      'translator' => $request->translator,
       'description' => $request->description,
-      'publisher' => $request->publisher,
-      'publication_date' => $request->publication_date,
       'price' => $request->price,
       'discount_percent' => $request->discount_percent,
-      'page_count' => $request->page_count,
       'stock' => $request->stock,
       'image_path' => $file_path,
       'is_important' => $is_important,
@@ -172,30 +175,15 @@ class AdminController extends Controller
   public function book($id){
     $book = Book::find($id);
     $categories = Category::all();
+    $producers = User::where('role', '=', 'producer')->get();
 
-    return view('admin.product-edit', compact(['book', 'categories']));
+    return view('admin.product-edit', compact(['book', 'categories', 'producers']));
   }
 
 
   public function bookEdit(Request $request){
-//    $this->validate($request, [
-//      'book_id' => 'required|numeric',
-//      'category_id' => 'numeric',
-//      'name' => 'required|min:2|max:200|string',
-//      'author' => 'required|min:2|max:200|string',
-//      'description' => 'required|min:2|max:6000|string',
-//      'publisher' => 'required|min:2|max:200|string',
-//      'publication_date' => 'required|min:2|max:200|string',
-//      'price' => 'required|min:0|max:20000000|numeric',
-//      'discount_percent' => 'required|min:0|max:100|numeric',
-//      'page_count' => 'required|min:0|max:200000|numeric',
-//      'stock' => 'required|min:0|max:200000|numeric',
-//      'image' => 'image',
-//    ]);
-
     $is_important = 0;
     if($request->is_important !== null) $is_important = 1;
-
 
     $book = Book::find($request->book_id);
 
@@ -225,16 +213,12 @@ class AdminController extends Controller
     }
 
 
+    $book->producer_id = $request->producer_id;
     $book->category_id = $request->category_id;
     $book->name = $request->name;
-    $book->author = $request->author;
-    $book->translator = $request->translator;
     $book->description = $request->description;
-    $book->publisher = $request->publisher;
-    $book->publication_date = $request->publication_date;
     $book->price = $request->price;
     $book->discount_percent = $request->discount_percent;
-    $book->page_count = $request->page_count;
     $book->stock = $request->stock;
     $book->image_path = $file_path;
     $book->is_important = $is_important;
@@ -349,10 +333,6 @@ class AdminController extends Controller
     return view('admin.report', compact('books', 'from_date', 'to_date', 'total'));
   }
 
-
-
-
-
   public function salesReportResult(Request $request){
     $from_date = Pnum::toLatin($request->from_date);
     $to_date = Pnum::toLatin($request->to_date);
@@ -391,6 +371,108 @@ class AdminController extends Controller
 
     return view('admin.report', compact('books', 'from_date', 'to_date', 'total'));
 
+  }
+
+
+//------------------------------------------------------------categories------------------------------------------------------------
+  public function categories(){
+    $categories = Category::orderBy('id', 'desc')->get();
+    return view('admin.category', compact('categories'));
+  }
+
+  public function categoryAdd(Request $request){
+    $category = Category::create([
+      'name' => $request->name
+    ]);
+    return redirect(url('/admin/category'));
+  }
+
+  public function categoryEdit($id){
+    $category = Category::find($id);
+    return view('admin.category-edit', compact('category'));
+  }
+
+  public function categoryUpdate(Request $request){
+    $category = Category::find($request->id);
+    $category->name = $request->name;
+    $category->save();
+    return redirect(url('/admin/category'));
+  }
+
+  public function categoryRemove(Request $request){
+    $category = Category::find($request->id);
+    $category->delete();
+    return back();
+  }
+
+
+
+  //------------------------------------------------------------producers------------------------------------------------------------
+ public function producers(){
+    $producers = User::orderBy('id', 'desc')->where('role', '=', 'producer')->get();
+   return view('admin.producers', compact('producers'));
+ }
+
+ public function producerAdd(Request $request){
+    $producer = User::create([
+      'name' => $request->name,
+      'email' => $request->email,
+      'phone' => $request->phone,
+      'role' => 'producer',
+      'password' => Hash::make($request->password),
+    ]);
+
+    return back();
+ }
+
+ public function producerEdit($id){
+    $producer = User::find($id);
+    if ($producer->role != 'producer')
+      return back();
+
+   return view('admin.producer-edit', compact('producer'));
+ }
+
+ public function producerUpdate(Request $request){
+    $producer = User::find($request->id);
+    $producer->name = $request->name;
+    $producer->email = $request->email;
+    $producer->phone = $request->phone;
+    $producer->password = Hash::make($request->password);
+    $producer->save();
+    return back();
+ }
+
+ public function producerRemove(Request $request){
+    $producer = User::find($request->id);
+    $producer->delete();
+    return back();
+ }
+
+
+
+  //------------------------------------------------------------producers------------------------------------------------------------
+  public function checkout(){
+    //do settled for admin products
+    $books = Book::where('producer_id', '=', '0')->get();
+    foreach ($books as $book){
+      $unsettleds = $book->orderContents()->where('is_settled', '=', 0)->get();
+      foreach ($unsettleds as $unsettled){
+        $unsettled->is_settled = 1;
+        $unsettled->save();
+      }
+    }
+
+
+    $unsettleds = OrderContent::where('is_settled', '=', 0)->get();
+    return view('admin.checkout', compact('unsettleds'));
+  }
+
+  public function checkoutDone($id){
+    $unsettled = OrderContent::find($id);
+    $unsettled->is_settled = 1;
+    $unsettled->save();
+    return back();
   }
 
 

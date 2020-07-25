@@ -20,7 +20,7 @@
                             <i class="fa fa-books  mr-1"></i>محصولات و خدمات
                         </a>
                     </li>
-                    <li  class="nav-item "><a id="adminCardNavBooks"  class="nav-link text-white" href="{{url('/admin/catergory')}}">
+                    <li  class="nav-item "><a id="adminCardNavBooks"  class="nav-link text-white" href="{{url('/admin/category')}}">
                             <i class="fa fa-badge  mr-1"></i> دسته بندی ها
                         </a>
                     </li>
@@ -36,6 +36,12 @@
                         </a>
                     </li>
 
+                    <li class="nav-item"><a  id="adminCardNavSite"  class="nav-link text-white " href="{{url('/admin/producers')}}">
+                            <i class="fa fa-person-dolly mr-1"></i>
+                            فروشندگان
+                        </a>
+                    </li>
+
 
                     <li class="nav-item"><a  id="adminCardNavSite"  class="nav-link text-white " href="{{route('admin-site')}}">
                             <i class="fa fa-info mr-1"></i>
@@ -43,11 +49,7 @@
                         </a>
                     </li>
 
-                    <li class="nav-item"><a  id="adminCardNavSite"  class="nav-link text-white " href="{{url('/admin/producers')}}">
-                            <i class="fa fa-person-dolly mr-1"></i>
-                            فروشندگان
-                        </a>
-                    </li>
+
 
                     <li class="nav-item"><a  id="adminCardNavSite"  class="nav-link text-white " href="{{url('/admin/sales/report')}}">
                             <i class="fa fa-print mr-1"></i>

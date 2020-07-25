@@ -2,6 +2,8 @@
 
 
 
+
+
 Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 
@@ -26,6 +28,7 @@ Route::post('/admin-slider-insert', 'AdminController@insertSlider')->name('admin
 
 
 Route::get('/admin-books', 'AdminController@books')->name('admin-books');
+Route::get('/admin-books/search', 'AdminController@bookSearch')->name('admin-books-search');
 Route::post('/admin-book-insert', 'AdminController@bookInsert')->name('admin-book-insert');
 Route::get('/admin-book/{id}', 'AdminController@book')->name('admin-book');
 Route::post('/admin-book-edit', 'AdminController@bookEdit')->name('admin-book-edit');
@@ -50,24 +53,27 @@ Route::post('/admin/sales/report-result', 'AdminController@salesReportResult')->
 //back up
 Route::get('/admin-backup', 'BackupController@index')->name('admin-backup');
 
-//Categories
-Route::get('/admin/catergory', function (){
-   return view('admin.category');
-});
 
-Route::get('/admin/catergory-edit', function (){
-    return view('admin.category-edit');
-});
+
+//Categories
+Route::get('/admin/category', 'AdminController@categories');
+Route::post('/admin/category/add', 'AdminController@categoryAdd');
+Route::get('/admin/category/edit/{id}', 'AdminController@categoryEdit');
+Route::post('/admin/category/update', 'AdminController@categoryUpdate');
+Route::post('/admin/category/remove', 'AdminController@categoryRemove');
+
+
 
 //Producers
+Route::get('/admin/producers', 'AdminController@producers');
+Route::post('/admin/producer/add', 'AdminController@producerAdd');
+Route::get('/admin/producer-edit/{id}', 'AdminController@producerEdit');
+Route::post('/admin/producer/update', 'AdminController@producerUpdate');
+Route::post('/admin/producer/remove', 'AdminController@producerRemove');
 
-Route::get('/admin/producers', function (){
-    return view('admin.producers');
-});
-
-Route::get('/admin/producer-edit', function (){
-    return view('admin.producer-edit');
-});
+//checkout
+Route::get('/admin/checkout', 'AdminController@checkout');
+Route::get('/admin/checkout/do/{id}', 'AdminController@checkoutDone');
 
 
 

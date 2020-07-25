@@ -10,7 +10,7 @@ class Book extends Model
     use SoftDeletes;
 
     protected $fillable = [
-      'category_id', 'name', 'description', 'price', 'discount_percent', 'stock', 'image_path', 'is_important', 'demo_file'
+      'producer_id', 'category_id', 'name', 'description', 'price', 'discount_percent', 'stock', 'image_path', 'is_important', 'demo_file'
     ];
 
 
@@ -20,5 +20,9 @@ class Book extends Model
 
     public function orderContents(){
       return $this->hasMany('App\OrderContent');
+    }
+
+    public function producer(){
+      return $this->belongsTo('App\User', 'producer_id');
     }
 }

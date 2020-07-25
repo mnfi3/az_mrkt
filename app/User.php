@@ -36,5 +36,13 @@ class User extends Authenticatable
       return $this->hasMany('App\Order')->orderBy('id', 'desc');
     }
 
+    public function producerBooks(){
+      return $this->hasMany('App\Book', 'producer_id');
+    }
+
+    public function producerSells(){
+      return $this->hasManyThrough('App\OrderContent', 'App\Book', 'producer_id');
+    }
+
 
 }
