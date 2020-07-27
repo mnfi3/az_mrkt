@@ -247,14 +247,21 @@ class AdminController extends Controller
 
 
   public function changePassword(Request $request){
-    $this->validate($request, [
-      'old_password' => 'required|min:6',
-      'new_password' => 'required|min:6',
-      'new_password_repeat' => 'required|min:6',
-    ]);
+//    $this->validate($request, [
+//      'old_password' => 'required|min:6',
+//      'new_password' => 'required|min:6',
+//      'new_password_repeat' => 'required|min:6',
+//    ]);
 
     $user = Auth::user();
     $message = null;
+
+    if (strlen($request->new_password) < 6){
+      $message = 'رمز جدید حداقل باید 6 کاراکتر باشد';
+      return view('admin.change_password', compact('message'));
+    }
+
+
     if(Hash::check($request->old_password, $user->password)){
       if($request->new_password === $request->new_password_repeat){
         $user->password = Hash::make($request->new_password);
@@ -267,10 +274,8 @@ class AdminController extends Controller
       $message = 'متاسفانه رمز شما تغییر نیافت.لطفا رمز قبلی و رمز جدید را با دقت وارد نمایید.';
     }
 
-    return redirect(route('admin-change-password-page'))->with('message', $message);
 
-
-
+    return view('admin.change_password', compact('message'));
   }
 
 

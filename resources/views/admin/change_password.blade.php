@@ -35,6 +35,9 @@
                     <input type="submit" class="btn btn-info" value="تغییر">
                 </form>
 
+                <br>
+                <span class="text-warning">{{$message}}</span>
+
             </div>
             <div class="col-xl-4">
                 <div class="d-flex justify-content-center align-items-center h-100">
@@ -44,8 +47,6 @@
             </div>
         </div>
     </div>
-    @if($message)
-        <span class="server-response sr-success active">{{$message}}</span>
-    @endif
+
 
 @endsection

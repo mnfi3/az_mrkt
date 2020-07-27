@@ -4,7 +4,7 @@
         <div class="row">
             <div class="col-xl-6">
                 <h6>تغییر رمز عبور</h6>
-                <form class="mt-5" method="post" action="{{route('admin-change-password')}}" onsubmit="return confirm('آیا از تغییر رمز عبور مطمئن هستید؟')">
+                <form class="mt-5" method="post" action="{{url('producer/update-pass')}}" onsubmit="return confirm('آیا از تغییر رمز عبور مطمئن هستید؟')">
                     @csrf
                     <div class="form-group row">
                         <label for="oldPassword" class="col-sm-4 col-form-label">رمز عبور قبلی</label>
@@ -35,6 +35,11 @@
                     <input type="submit" class="btn btn-info" value="تغییر">
                 </form>
 
+                <br>
+                <span class="text-warning">{{$message}}</span>
+
+
+
             </div>
             <div class="col-xl-4">
                 <div class="d-flex justify-content-center align-items-center h-100">
@@ -43,9 +48,11 @@
                 </div>
             </div>
         </div>
+
+
+
+
+
     </div>
-{{--    @if($message)--}}
-{{--        <span class="server-response sr-success active">{{$message}}</span>--}}
-{{--    @endif--}}
 
 @endsection

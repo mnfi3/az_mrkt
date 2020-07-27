@@ -4,19 +4,28 @@
         <div class="card">
             <div class="card-header pb-3" style="background-color: #1d7b8a">
                 <ul class="nav nav-tabs card-header-tabs d-flex justify-content-between">
+                    <li  class="nav-item "><a id="adminCardNavOrders" class="nav-link text-white" href="{{url('/producer/products')}}">
+                            <i class="fa fa-list mr-1"></i>
+                            لیست محصولات
+                        </a>
+                    </li>
+
                     <li  class="nav-item "><a id="adminCardNavOrders" class="nav-link text-white" href="{{url('/producer/sold')}}">
                             <i class="fa fa-list mr-1"></i>
                             لیست فروش
                         </a>
                     </li>
 
-                    <li class="nav-item"><a  id="adminCardNavPass"  class="nav-link text-white " href="{{url('/producer/change-pass')}}">
-                            <i class="fa fa-key mr-1"></i>
-                            تغییر رمز
-                        </a></li>
+
                     <li class="nav-item"><a  id="adminCardNavSite"  class="nav-link text-white " href="{{url('/producer/report')}}">
                             <i class="fa fa-print mr-1"></i>
                             گزارش فروش
+                        </a>
+                    </li>
+
+                    <li class="nav-item"><a  id="adminCardNavPass"  class="nav-link text-white " href="{{url('/producer/change-pass')}}">
+                            <i class="fa fa-key mr-1"></i>
+                            تغییر رمز
                         </a>
                     </li>
                 </ul>

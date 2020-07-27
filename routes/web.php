@@ -91,14 +91,17 @@ Route::post('/user-cart-pay-verify', 'UserController@cartPayVerify')->name('user
 
 
 
-//Route::get('/user-dashboard', function () {
-//  return view('user.dashboard');
-//})->name('user-dashboard');
 
 
-//Route::get('/user-profile', function () {
-//  return view('user.profile');
-//})->name('user-profile');
+
+
+//producer routes
+Route::get('/producer/products', 'ProducerController@products');
+Route::get('/producer/sold', 'ProducerController@sold');
+Route::get('/producer/change-pass', 'ProducerController@changePass');
+Route::post('/producer/update-pass', 'ProducerController@updatePass');
+Route::get('/producer/report', 'ProducerController@report');
+Route::post('/producer/report-result', 'ProducerController@reportResult');
 
 
 
