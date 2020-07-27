@@ -63,9 +63,16 @@
                             <th>{{++$i}}</th>
                             <td>{{$book->name}} </td>
                             <td>{{$book->count}}</td>
+
+                            @if($book->producer_id == 0)
                             <td>
                                 <strong style="color: darkgreen">دانشگاه شهید مدنی آذربایجان</strong>
                             </td>
+                            @else
+                                <td>
+                                    <strong style="color: darkblue">{{$book->producer->name}}</strong>
+                                </td>
+                            @endif
                             <td>{{number_format($book->sum)}} تومان</td>
                         </tr>
                         @endforeach
