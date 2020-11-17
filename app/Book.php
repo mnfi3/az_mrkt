@@ -9,8 +9,13 @@ class Book extends Model
 {
     use SoftDeletes;
 
+    const KEY_STATUS_ACCEPTED = 'accepted';
+    const KEY_STATUS_REJECTED = 'rejected';
+    const KEY_STATUS_PENDING = 'pending';
+
+
     protected $fillable = [
-      'producer_id', 'category_id', 'name', 'description', 'price', 'discount_percent', 'stock', 'image_path', 'is_important', 'demo_file'
+      'producer_id', 'category_id', 'name', 'description', 'price', 'discount_percent', 'stock', 'image_path', 'is_important', 'demo_file', 'status'
     ];
 
 

@@ -50,7 +50,7 @@
                         <thead>
                         <tr>
                             <th scope="col">ردیف</th>
-                            <th scope="col">نام کتاب</th>
+                            <th scope="col">نام محصول</th>
                             <th scope="col">تعداد فروش</th>
                             <th scope="col">فروشنده</th>
                             <th scope="col">مبلغ کل</th>

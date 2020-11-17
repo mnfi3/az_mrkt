@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Book;
+use App\Category;
 use App\Http\Controllers\Util\Pdate;
 use App\Http\Controllers\Util\Pnum;
 use Illuminate\Http\Request;
@@ -19,7 +21,119 @@ class ProducerController extends Controller
   public function products(){
     $user = Auth::user();
     $products = $user->producerBooks;
-    return view('producer.products', compact('products'));
+    $categories = Category::all();
+    return view('producer.products', compact('products', 'categories'));
+  }
+
+  public function productAdd(Request $request){
+    $user = Auth::user();
+
+    $is_important = 0;
+
+    $image = $request->file('image');
+    $demo = $request->file('demo_file');
+
+    $file_extension = $image->getClientOriginalExtension();
+    $dir = FileHelper::getFileDirName('images/books');
+    $file_name = FileHelper::getFileNewName();
+    $image_name = $file_name . '.' . $file_extension;
+    $file_path = $dir . '/' . $file_name . '.'.$file_extension;
+    $image->move($dir, $image_name);
+
+
+    $file_path2 = null;
+    if($demo !== null) {
+      $file_extension2 = $demo->getClientOriginalExtension();
+      $dir2 = FileHelper::getFileDirName('demo/books');
+      $file_name2 = FileHelper::getFileNewName();
+      $demo_name = $file_name2 . '.' . $file_extension2;
+      $file_path2 = $dir2 . '/' . $file_name2 . '.' . $file_extension2;
+      $demo->move($dir2, $demo_name);
+    }
+
+    $book = Book::create([
+      'producer_id' => $user->id,
+      'category_id' => $request->category_id,
+      'name' => $request->name,
+      'description' => $request->description,
+      'price' => $request->price,
+      'discount_percent' => $request->discount_percent,
+      'stock' => $request->stock,
+      'image_path' => $file_path,
+      'is_important' => $is_important,
+      'demo_file' => $file_path2,
+      'status' => Book::KEY_STATUS_PENDING,
+    ]);
+
+    return redirect(url('/producer/products'));
+  }
+
+
+  public function productEdit($id){
+    $user = Auth::user();
+    $product = Book::find($id);
+    $categories = Category::all();
+    if ($product->producer_id != $user->id) return back();
+
+    return view('producer.product-edit', compact('product', 'categories'));
+  }
+
+  public function productRemove(Request $request){
+    $user = Auth::user();
+    $product = Book::find($request->id);
+    if ($product->producer_id != $user->id) return back();
+
+    $product->delete();
+    return redirect(url('/producer/products'));
+  }
+
+  public function productUpdate(Request $request){
+    $user = Auth::user();
+    $is_important = 0;
+
+    $book = Book::find($request->book_id);
+
+    if ($book->producer_id != $user->id) return back();
+
+    $image = $request->file('image');
+    if ($image !== null) {
+      $file_extension = $image->getClientOriginalExtension();
+      $dir = FileHelper::getFileDirName('images/books');
+      $file_name = FileHelper::getFileNewName();
+      $image_name = $file_name . '.' . $file_extension;
+      $file_path = $dir . '/' . $file_name . '.' . $file_extension;
+      $image->move($dir, $image_name);
+    }else{
+      $file_path = $book->image_path;
+    }
+
+
+
+    $file_path2 = $book->demo_file;
+    $demo = $request->file('demo_file');
+    if($demo !== null) {
+      $file_extension2 = $demo->getClientOriginalExtension();
+      $dir2 = FileHelper::getFileDirName('demo/books');
+      $file_name2 = FileHelper::getFileNewName();
+      $demo_name = $file_name2 . '.' . $file_extension2;
+      $file_path2 = $dir2 . '/' . $file_name2 . '.' . $file_extension2;
+      $demo->move($dir2, $demo_name);
+    }
+
+
+    $book->producer_id = $user->id;
+    $book->category_id = $request->category_id;
+    $book->name = $request->name;
+    $book->description = $request->description;
+    $book->price = $request->price;
+    $book->discount_percent = $request->discount_percent;
+    $book->stock = $request->stock;
+    $book->image_path = $file_path;
+    $book->is_important = $is_important;
+    $book->demo_file = $file_path2;
+    $book->save();
+
+    return redirect(url('/producer/products'));
   }
 
   public function sold(){
@@ -129,5 +243,17 @@ class ProducerController extends Controller
 
     return view('producer.report', compact('books', 'from_date', 'to_date', 'total'));
 
+  }
+
+
+  public function settlement(){
+    $user = Auth::user();
+    $sum = 0;
+    $sells = $user->producerSells()->where('is_settled', '=', 0)->get();
+    foreach ($sells as $sell){
+      $sum += $sell->count * $sell->price;
+    }
+    $settlements = $user->producerSettlements()->orderBy('id', 'desc')->get();
+    return view('producer.checkout', compact('settlements', 'sum'));
   }
 }

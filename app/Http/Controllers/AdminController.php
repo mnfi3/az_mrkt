@@ -9,6 +9,8 @@ use App\Http\Controllers\Util\Pdate;
 use App\Http\Controllers\Util\Pnum;
 use App\Order;
 use App\OrderContent;
+use App\Setting;
+use App\Settlement;
 use App\Slider;
 use App\User;
 use Illuminate\Http\Request;
@@ -65,7 +67,59 @@ class AdminController extends Controller
   public function site(){
     $sliders = Slider::all();
     $users = User::where('role', '=', 'user')->get();
-    return view('admin.site', compact('sliders', 'users'));
+    $address = Setting::get(Setting::KEY_ADDRESS)->value;
+    $manager = Setting::get(Setting::KEY_MANAGER_NAME)->value;
+    $email = Setting::get(Setting::KEY_MANAGER_EMAIL)->value;
+    $direct_phone = Setting::get(Setting::KEY_DIRECT_PHONE)->value;
+    $internal_phone = Setting::get(Setting::KEY_INTERNAL_PHONE)->value;
+    $link1_title = Setting::get(Setting::KEY_LINK1_TITLE)->value;
+    $link1 = Setting::get(Setting::KEY_LINK1)->value;
+    $link2_title = Setting::get(Setting::KEY_LINK2_TITLE)->value;
+    $link2 = Setting::get(Setting::KEY_LINK2)->value;
+    $link3_title = Setting::get(Setting::KEY_LINK3_TITLE)->value;
+    $link3 = Setting::get(Setting::KEY_LINK3)->value;
+    return view('admin.site', compact('sliders', 'users', 'address', 'manager', 'email', 'direct_phone', 'internal_phone',
+      'link1_title', 'link1', 'link2_title', 'link2', 'link3_title', 'link3'));
+  }
+
+  public function updateFooter(Request $request){
+    $address = Setting::get(Setting::KEY_ADDRESS);
+    $manager = Setting::get(Setting::KEY_MANAGER_NAME);
+    $email = Setting::get(Setting::KEY_MANAGER_EMAIL);
+    $direct_phone = Setting::get(Setting::KEY_DIRECT_PHONE);
+    $internal_phone = Setting::get(Setting::KEY_INTERNAL_PHONE);
+    $link1 = Setting::get(Setting::KEY_LINK1);
+    $link2 = Setting::get(Setting::KEY_LINK2);
+    $link3 = Setting::get(Setting::KEY_LINK3);
+    $link1_title = Setting::get(Setting::KEY_LINK1_TITLE);
+    $link2_title = Setting::get(Setting::KEY_LINK2_TITLE);
+    $link3_title = Setting::get(Setting::KEY_LINK3_TITLE);
+
+    $address->value = $request->address;
+    $address->save();
+    $manager->value = $request->manager;
+    $manager->save();
+    $email->value = $request->email;
+    $email->save();
+    $direct_phone->value = $request->direct_phone;
+    $direct_phone->save();
+    $internal_phone->value = $request->internal_phone;
+    $internal_phone->save();
+    $link1->value = $request->link1;
+    $link1->save();
+    $link2->value = $request->link2;
+    $link2->save();
+    $link3->value = $request->link3;
+    $link3->save();
+
+    $link1_title->value = $request->link1_title;
+    $link1_title->save();
+    $link2_title->value = $request->link2_title;
+    $link2_title->save();
+    $link3_title->value = $request->link3_title;
+    $link3_title->save();
+
+    return back();
   }
 
   public function sliderRemove(Request $request){
@@ -104,15 +158,35 @@ class AdminController extends Controller
 
 
   public function books(){
-    $books = Book::orderBy('id', 'desc')->paginate(20);
+    $books = Book::orderBy('id', 'desc')->where('status', '=', Book::KEY_STATUS_ACCEPTED)->paginate(20);
     $categories = Category::all();
     $producers = User::where('role', '=', 'producer')->get();
     return view('admin.products', compact(['books', 'categories', 'producers']));
   }
 
+  public function booksNew(){
+    $books = Book::orderBy('id', 'desc')->where('status', '=', Book::KEY_STATUS_PENDING)->paginate(20);
+    return view('admin.received-products', compact(['books']));
+  }
+
+  public function booksNewAccept($id){
+    $book = Book::find($id);
+    $book->status = Book::KEY_STATUS_ACCEPTED;
+    $book->save();
+    return back();
+  }
+
+  public function booksNewReject($id){
+    $book = Book::find($id);
+    $book->status = Book::KEY_STATUS_REJECTED;
+    $book->save();
+    return back();
+  }
+
+
   public function bookSearch(Request $request){
     $search = $request->text;
-    $books =Book::where('name', 'like', '%'.$search.'%')->paginate(20);
+    $books =Book::where('name', 'like', '%'.$search.'%')->where('status', '=', Book::KEY_STATUS_ACCEPTED)->paginate(20);
     $categories = Category::all();
     $producers = User::where('role', '=', 'producer')->get();
     return view('admin.products', compact(['books', 'categories', 'producers']))->with('search', $search);
@@ -166,6 +240,7 @@ class AdminController extends Controller
       'image_path' => $file_path,
       'is_important' => $is_important,
       'demo_file' => $file_path2,
+      'status' => Book::KEY_STATUS_ACCEPTED,
     ]);
 
     return redirect(route('admin-books'));
@@ -424,6 +499,10 @@ class AdminController extends Controller
       'email' => $request->email,
       'phone' => $request->phone,
       'role' => 'producer',
+      'bank' => $request->bank,
+      'bank_account' => $request->bank_account,
+      'bank_shba' => $request->bank_shba,
+      'bank_account_owner' => $request->bank_account_owner,
       'password' => Hash::make($request->password),
     ]);
 
@@ -439,13 +518,17 @@ class AdminController extends Controller
  }
 
  public function producerUpdate(Request $request){
-    $producer = User::find($request->id);
-    $producer->name = $request->name;
-    $producer->email = $request->email;
-    $producer->phone = $request->phone;
-    $producer->password = Hash::make($request->password);
-    $producer->save();
-    return back();
+   $producer = User::find($request->id);
+   $producer->name = $request->name;
+   $producer->email = $request->email;
+   $producer->phone = $request->phone;
+   $producer->bank = $request->bank;
+   $producer->bank_account = $request->bank_account;
+   $producer->bank_shba = $request->bank_shba;
+   $producer->bank_account_owner = $request->bank_account_owner;
+   $producer->password = Hash::make($request->password);
+   $producer->save();
+   return back();
  }
 
  public function producerRemove(Request $request){
@@ -477,6 +560,63 @@ class AdminController extends Controller
     $unsettled = OrderContent::find($id);
     $unsettled->is_settled = 1;
     $unsettled->save();
+    return back();
+  }
+
+  public function settlement(){
+    $settlements = Settlement::orderBy('id', 'desc')->get();
+    $producers = User::where('role', '=', 'producer')->get();
+
+    foreach ($producers as $producer) {
+      $sum = 0;
+      $unsettled_sells = $producer->producerSells()->where('is_settled', '=', 0)->get();
+      foreach ($unsettled_sells as $sell){
+        $sum += $sell->count * $sell->price;
+      }
+
+      $producer->sum = $sum;
+    }
+
+    $time = date('Y-m-d H:i:s');
+    return view('admin.settlement', compact('settlements', 'producers', 'time'));
+  }
+
+
+  public function settlementDo(Request $request){
+    $producer = User::find($request->user_id);
+    $time = $request->time;
+
+    $document = $request->file('document');
+
+
+    $file_path2 = null;
+    if($document !== null) {
+      $file_extension2 = $document->getClientOriginalExtension();
+      $dir2 = FileHelper::getFileDirName('producers/settlement');
+      $file_name2 = FileHelper::getFileNewName();
+      $demo_name = $file_name2 . '.' . $file_extension2;
+      $file_path2 = $dir2 . '/' . $file_name2 . '.' . $file_extension2;
+      $document->move($dir2, $demo_name);
+    }
+
+    $settlement = Settlement::create([
+      'producer_id' => $producer->id,
+      'amount' => $request->amount,
+      'bank' => $producer->bank,
+      'bank_account' => $producer->bank_account,
+      'bank_shba' => $producer->bank_shba,
+      'bank_account_owner' => $producer->bank_account_owner,
+      'document' => $file_path2,
+    ]);
+
+
+    $unsettled_sells = $producer->producerSells()->where('is_settled', '=', 0)->where('created_at', '<', $time)->get();
+    foreach ($unsettled_sells as $sell){
+      $sell->is_settled = 1;
+      $sell->save();
+    }
+
+
     return back();
   }
 

@@ -39,6 +39,48 @@
                                    placeholder="رمز عبور  تامین کننده را وارد کنید" value="" >
                         </div>
                     </div>
+
+
+
+                    <br>
+                    <h7 class="mb-3">اطلاعات مالی</h7>
+                    <hr>
+                    <div class="form-group row">
+                        <label for="postTitle" class="col-sm-2 col-form-label">نام بانک</label>
+                        <div class="col-sm-7">
+                            <input type="" class="form-control" id="postTitle"
+                                   name="bank"
+                                   placeholder="نام بانک را وارد کنید" value="{{$producer->bank}}" required>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="postTitle" class="col-sm-2 col-form-label">شماره حساب</label>
+                        <div class="col-sm-7">
+                            <input type="" class="form-control" id="postTitle"
+                                   name="bank_account"
+                                   placeholder="شماره حساب را وارد کنید" value="{{$producer->bank_account}}" required>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="postTitle" class="col-sm-2 col-form-label">شبا</label>
+                        <div class="col-sm-7">
+                            <input type="" class="form-control" id="postTitle"
+                                   name="bank_shba"
+                                   placeholder="شبا را وارد کنید" value="{{$producer->bank_shba}}" required>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="postTitle" class="col-sm-2 col-form-label">نام دارنده حساب</label>
+                        <div class="col-sm-7">
+                            <input type="" class="form-control" id="postTitle"
+                                   name="bank_account_owner"
+                                   placeholder="نام دارنده حساب را وارد کنید" value="{{$producer->bank_account_owner}}" required>
+                        </div>
+                    </div>
+
+
+
+
                     <input type="hidden" name="book_id" value="">
                     <div class="form-group row">
                         <div class="col-sm-10">

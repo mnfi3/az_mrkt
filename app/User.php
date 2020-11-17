@@ -13,7 +13,7 @@ class User extends Authenticatable
 
 
     protected $fillable = [
-        'name', 'email', 'phone', 'password', 'role'
+        'name', 'email', 'phone', 'password', 'role', 'bank', 'bank_account', 'bank_shba', 'bank_account_owner'
     ];
 
 
@@ -42,6 +42,11 @@ class User extends Authenticatable
 
     public function producerSells(){
       return $this->hasManyThrough('App\OrderContent', 'App\Book', 'producer_id');
+    }
+
+
+    public function producerSettlements(){
+      return $this->hasMany('App\Settlement', 'producer_id');
     }
 
 

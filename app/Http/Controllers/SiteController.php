@@ -15,7 +15,7 @@ class SiteController extends Controller
 
   public function index(){
     $sliders = Slider::all();
-    $books = Book::orderBy('is_important', 'desc')->orderBy('id', 'desc')->paginate(24);
+    $books = Book::orderBy('is_important', 'desc')->orderBy('id', 'desc')->where('status', '=', Book::KEY_STATUS_ACCEPTED)->paginate(24);
 //    $best_seller_ids = DB::select("SELECT book_id,count(book_id) as total FROM `order_contents`  group by(book_id) order by total desc limit 10");
 //    $best_sellers = array();
 //    foreach ($best_seller_ids as $id) {
@@ -33,7 +33,7 @@ class SiteController extends Controller
 
   public function bookSearch(Request $request){
     $search = $request->text;
-    $books =Book::where('name', 'like', '%'.$search.'%')->paginate(24);
+    $books =Book::where('name', 'like', '%'.$search.'%')->where('status', '=', Book::KEY_STATUS_ACCEPTED)->paginate(24);
     $sliders = Slider::all();
     $categories = Category::orderby('id', 'desc')->get();
     return view('site.welcome', compact(['sliders', 'books', 'categories']))->with('search', $search);
@@ -59,6 +59,8 @@ class SiteController extends Controller
     $categories = Category::orderby('id', 'desc')->get();
     $book = Book::find($id);
 
+    if ($book->status != Book::KEY_STATUS_ACCEPTED) return back();
+
     return view('site.detail', compact(['book', 'message', 'categories']));
   }
 
@@ -66,7 +68,7 @@ class SiteController extends Controller
 
   public function categoryBooks($id){
     $category = Category::find($id);
-    $books = $category->books()->orderBy('is_important', 'desc')->orderBy('id', 'desc')->paginate(24);
+    $books = $category->books()->orderBy('is_important', 'desc')->orderBy('id', 'desc')->where('status', '=', Book::KEY_STATUS_ACCEPTED)->paginate(24);
     $sliders = Slider::all();
     $categories = Category::orderby('id', 'desc')->get();
 

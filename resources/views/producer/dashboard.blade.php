@@ -16,6 +16,12 @@
                         </a>
                     </li>
 
+                    <li  class="nav-item "><a id="adminCardNavOrders" class="nav-link text-white" href="{{url('/producer/settlement')}}">
+                            <i class="fa fa-list mr-1"></i>
+                            لیست تسویه حساب ها
+                        </a>
+                    </li>
+
 
                     <li class="nav-item"><a  id="adminCardNavSite"  class="nav-link text-white " href="{{url('/producer/report')}}">
                             <i class="fa fa-print mr-1"></i>

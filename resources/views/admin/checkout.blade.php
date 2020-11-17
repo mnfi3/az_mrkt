@@ -18,7 +18,7 @@
                     <th scope="col">قیمت کل</th>
                     <th scope="col">اطلاعات فروشنده</th>
                     <th scope="col">زمان ثبت سفارش</th>
-                    <th scope="col" style="width: 140px">تسویه با فروشنده</th>
+                    <th scope="col" style="width: 140px">وضعیت تسویه</th>
 
 
                 </tr>
@@ -55,7 +55,8 @@
 
 
                         <td>
-                            <a href="{{url('/admin/checkout/do', $unsettled->id)}}" class="btn btn-sm btn-warning float-md-right"> تایید </a>
+                            {{--<a href="{{url('/admin/checkout/do', $unsettled->id)}}" class="btn btn-sm btn-warning float-md-right"> تایید </a>--}}
+                            تسویه نشده
                         </td>
 
                     </tr>
