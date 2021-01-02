@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Aug 03, 2020 at 09:52 AM
+-- Generation Time: Nov 17, 2020 at 08:41 PM
 -- Server version: 5.7.24
 -- PHP Version: 7.3.1
 
@@ -64,11 +64,20 @@ CREATE TABLE IF NOT EXISTS `books` (
   `image_path` varchar(255) NOT NULL,
   `is_important` tinyint(1) DEFAULT NULL,
   `demo_file` varchar(250) DEFAULT NULL,
+  `status` varchar(255) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `deleted_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `books`
+--
+
+INSERT INTO `books` (`id`, `producer_id`, `category_id`, `name`, `description`, `price`, `discount_percent`, `stock`, `image_path`, `is_important`, `demo_file`, `status`, `created_at`, `updated_at`, `deleted_at`) VALUES
+(1, 4, 1, 'تستی', 'توضیحات محصول تستی', 100000, 0, 10, 'uploads/images/books/2020/11/17d07h49mCAFKH8p6D8.jpg', 0, NULL, 'accepted', '2020-11-17 16:19:57', '2020-11-17 19:28:10', NULL),
+(2, 4, 1, 'کیت پزشکی', 'توضیحات محصول تستی', 100000, 0, 10, 'uploads/images/books/2020/11/17d07h49mCAFKH8p6D8.jpg', 0, NULL, 'pending', '2020-11-17 16:19:57', '2020-11-17 19:28:10', NULL);
 
 -- --------------------------------------------------------
 
@@ -121,7 +130,14 @@ CREATE TABLE IF NOT EXISTS `categories` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `deleted_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `categories`
+--
+
+INSERT INTO `categories` (`id`, `name`, `created_at`, `updated_at`, `deleted_at`) VALUES
+(1, 'فنی و مهندسی', '2020-11-16 20:30:00', '2020-11-16 20:30:00', NULL);
 
 -- --------------------------------------------------------
 
@@ -152,7 +168,7 @@ CREATE TABLE IF NOT EXISTS `migrations` (
   `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `batch` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `migrations`
@@ -187,7 +203,11 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (26, '2019_11_24_135938_add_letter_number_and_sended_at_to_orders_table', 12),
 (27, '2019_12_07_133140_add_translator_to_books_table', 13),
 (28, '2020_07_25_161829_add_producer_id_to_books_table', 14),
-(29, '2020_07_25_210650_add_is_settled_to_order_contents_tale', 15);
+(29, '2020_07_25_210650_add_is_settled_to_order_contents_tale', 15),
+(30, '2020_11_17_192741_add_status_to_books_table', 16),
+(32, '2020_11_17_201655_create_settlements_table', 17),
+(33, '2020_11_17_212201_add_some_fields_to_users_table', 18),
+(34, '2020_11_17_214207_create_settings_table', 19);
 
 -- --------------------------------------------------------
 
@@ -272,7 +292,70 @@ CREATE TABLE IF NOT EXISTS `payments` (
   `deleted_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `payments_user_id_foreign` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `payments`
+--
+
+INSERT INTO `payments` (`id`, `user_id`, `amount`, `is_success`, `retrival_ref_no`, `system_trace_no`, `created_at`, `updated_at`, `deleted_at`) VALUES
+(1, 1, 100, 1, '5454', '545445', '2020-11-17 20:30:00', '2020-11-17 20:30:00', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `settings`
+--
+
+DROP TABLE IF EXISTS `settings`;
+CREATE TABLE IF NOT EXISTS `settings` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `key` varchar(255) DEFAULT NULL,
+  `value` text,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `settings`
+--
+
+INSERT INTO `settings` (`id`, `key`, `value`, `created_at`, `updated_at`, `deleted_at`) VALUES
+(1, 'address', 'تبریز ،٣٥ کیلومتری جاده تبریز-مراغه ،دانشگاه شهید مدنی آذربایجان، دفتر همکاری های علمی', '2020-11-17 18:27:54', '2020-11-17 18:47:29', NULL),
+(2, 'manager-name', 'دکتر لطف اللهی', '2020-11-17 18:27:54', '2020-11-17 18:46:04', NULL),
+(3, 'manager-email', 'lotfollahi@azaruniv.ac.ir', '2020-11-17 18:27:54', '2020-11-17 18:46:05', NULL),
+(4, 'direct-phone', '34327567-041', '2020-11-17 18:27:54', '2020-11-17 18:46:05', NULL),
+(5, 'internal-phone', '2456', '2020-11-17 18:27:54', '2020-11-17 18:46:05', NULL),
+(6, 'link1', 'azaruniv.ac.ir', '2020-11-17 18:27:54', '2020-11-17 18:46:05', NULL),
+(7, 'link2', 'azaruniv.ac.ir', '2020-11-17 18:27:54', '2020-11-17 18:46:05', NULL),
+(8, 'link3', 'azaruniv.ac.ir', '2020-11-17 18:27:54', '2020-11-17 18:46:05', NULL),
+(9, 'link1-title', 'دانشگاه شهید مدنی آذربایجان', '2020-11-17 18:41:27', '2020-11-17 18:48:18', NULL),
+(10, 'link2-title', 'دانشگاه شهید مدنی آذربایجان', '2020-11-17 18:41:27', '2020-11-17 18:48:18', NULL),
+(11, 'link3-title', 'دانشگاه شهید مدنی آذربایجان', '2020-11-17 18:41:27', '2020-11-17 18:48:18', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `settlements`
+--
+
+DROP TABLE IF EXISTS `settlements`;
+CREATE TABLE IF NOT EXISTS `settlements` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `producer_id` int(11) DEFAULT NULL,
+  `amount` int(11) DEFAULT NULL,
+  `bank` varchar(255) DEFAULT NULL,
+  `bank_account` varchar(255) DEFAULT NULL,
+  `bank_account_owenr` varchar(255) DEFAULT NULL,
+  `bank_shba` varchar(255) DEFAULT NULL,
+  `document` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -303,6 +386,10 @@ CREATE TABLE IF NOT EXISTS `users` (
   `email` varchar(255) NOT NULL,
   `phone` varchar(250) DEFAULT NULL,
   `role` varchar(255) NOT NULL,
+  `bank` varchar(255) DEFAULT NULL,
+  `bank_account` varchar(255) DEFAULT NULL,
+  `bank_shba` varchar(255) DEFAULT NULL,
+  `bank_account_owner` varchar(255) DEFAULT NULL,
   `password` varchar(255) NOT NULL,
   `remember_token` varchar(100) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -310,16 +397,18 @@ CREATE TABLE IF NOT EXISTS `users` (
   `deleted_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `users_email_unique` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `name`, `email`, `phone`, `role`, `password`, `remember_token`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(1, 'محسن فرجامی', 'mohsen1@gmail.com', '09145821998', 'user', '$2y$10$cQ1Ec.iEFyi42oQ/ZUy0Me2ElaZAhmKcChR9eRMdMT4EOA/QZY47.', 'lDSIGKsqtyHL0oBZpxiMYiAulVbBOAHdP1LrlZ6Mo47SiOaGt3jO1YXysqJx', '2018-12-14 20:30:00', '2018-12-14 20:30:00', NULL),
-(2, 'محسن فرجامی', 'mohsen@gmail.com', '09145821998', 'admin', '$2y$10$cQ1Ec.iEFyi42oQ/ZUy0Me2ElaZAhmKcChR9eRMdMT4EOA/QZY47.', 'xIBHyDMzQnJI3JQjIentr1y01Xkc5GGYEuEfPEQULru5WwQNChTRZCItmcdi', '2019-01-08 16:36:44', '2019-01-08 16:36:44', NULL),
-(3, 'محسن فرجامی', 'mohsen2@gmail.com', '09145821998', 'user', '$2y$10$ImbJQHOTzjGnhP1PgpzpIuo4xeIxSA4UkOj/LJ/ZaG7HxNsx8aWPq', 'xC9hHCTAsIqSECFtG1jNexMGYuZZxxKAA2QVFisnmrRc8pIwh01WCUuQp0LG', '2019-01-09 11:04:32', '2019-01-09 11:04:32', NULL);
+INSERT INTO `users` (`id`, `name`, `email`, `phone`, `role`, `bank`, `bank_account`, `bank_shba`, `bank_account_owner`, `password`, `remember_token`, `created_at`, `updated_at`, `deleted_at`) VALUES
+(1, 'خریداز', 'mohsen1@gmail.com', '09145821998', 'user', NULL, NULL, NULL, NULL, '$2y$10$cQ1Ec.iEFyi42oQ/ZUy0Me2ElaZAhmKcChR9eRMdMT4EOA/QZY47.', 'lDSIGKsqtyHL0oBZpxiMYiAulVbBOAHdP1LrlZ6Mo47SiOaGt3jO1YXysqJx', '2018-12-14 20:30:00', '2018-12-14 20:30:00', NULL),
+(2, 'محسن فرجامی', 'mohsen@gmail.com', '09145821998', 'admin', NULL, NULL, NULL, NULL, '$2y$10$cQ1Ec.iEFyi42oQ/ZUy0Me2ElaZAhmKcChR9eRMdMT4EOA/QZY47.', 'junr8LMuj0mA5P3hBAUqWdpCULsVigIG15UJt5lQqfoFw06glRIfk3K1ufoV', '2019-01-08 16:36:44', '2019-01-08 16:36:44', NULL),
+(3, 'محسن فرجامی', 'mohsen2@gmail.com', '09145821998', 'user', NULL, NULL, NULL, NULL, '$2y$10$ImbJQHOTzjGnhP1PgpzpIuo4xeIxSA4UkOj/LJ/ZaG7HxNsx8aWPq', 'xC9hHCTAsIqSECFtG1jNexMGYuZZxxKAA2QVFisnmrRc8pIwh01WCUuQp0LG', '2019-01-09 11:04:32', '2019-01-09 11:04:32', NULL),
+(4, 'محسن فرجامی', 'mohsen3@gmail.com', '09145821998', 'producer', NULL, NULL, NULL, NULL, '$2y$10$ImbJQHOTzjGnhP1PgpzpIuo4xeIxSA4UkOj/LJ/ZaG7HxNsx8aWPq', '697x2GAxarkYsMtmvma51btcrzNNTJe8rtFkz6aPMx8RaHAq4JXJo3dWiEJ3', '2019-01-09 11:04:32', '2019-01-09 11:04:32', NULL),
+(5, 'فروشگاه جدید2', 'producer1@gmail.com', '222222', 'producer', 'ملی2', '2222222', 'IR2222', 'علی احمدی2', '$2y$10$sl2gZ.Cp9w1EpOZkZLHnvu.CD2bAtGw5.RG9OEnpDSqxrifRHv6Bm', NULL, '2020-11-17 18:00:46', '2020-11-17 18:07:10', NULL);
 
 --
 -- Constraints for dumped tables

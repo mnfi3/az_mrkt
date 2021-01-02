@@ -130,13 +130,13 @@ class Pdate {
     if($input=='j')
     {
       $persian_d=$persian_date[2];
-      if($persian_d{0}=='0') $persian_d=substr($persian_d,1);
+      if($persian_d[0]=='0') $persian_d=substr($persian_d,1);
       return $persian_d;
     }
     if($input=='n')
     {
       $persian_n=$persian_date[1];
-      if($persian_n{0}=='0') $persian_n=substr($persian_n,1);
+      if($persian_n[0]=='0') $persian_n=substr($persian_n,1);
       return $persian_n;
     }
 
@@ -153,7 +153,7 @@ class Pdate {
     if($input=='compelete')
     {
       $persian_d=$persian_date[2];
-      if($persian_d{0}=='0') $persian_d=substr($persian_d,1);
+      if($persian_d[0]=='0') $persian_d=substr($persian_d,1);
       return $this->persian_day_names[date('w')].' '.$persian_d.' '.$this->persian_month_names[$persian_date[1]].' '.$persian_date[0];
     }
   }
@@ -161,6 +161,17 @@ class Pdate {
   function date($input)
   {
     return $this->toPersian(date('Y').date('m').date('d'),$input);
+  }
+
+  public function to_date($j_date)
+  {
+    $j_date=str_replace('/','',$j_date);
+    $j_date=str_replace('-','',$j_date);
+    $j_year=substr($j_date,0,4);
+    $j_month=substr($j_date,4,2);
+    $j_day=substr($j_date,6,2);
+    $gregorian_date=$this->persian_to_gregorian($j_year,$j_month,$j_day);
+    return $gregorian_date[0].'-'.$gregorian_date[1].'-'.$gregorian_date[2];
   }
 
   public function toGregorian($j_date)
